@@ -11,8 +11,8 @@ import java.sql.Timestamp;
 @Data
 @Scope("prototype")
 @Component
-@Entity
-public class Comments {
+@Entity(name = "comments")
+public class Comment {
     @Id
     @SequenceGenerator(name = "comments_id_seq_gen", sequenceName = "comments_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "comments_id_seq_gen", strategy = GenerationType.SEQUENCE)
