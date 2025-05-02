@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Scope("prototype")
 @Component
 @Entity(name = "users")
-public class Users {
+public class User {
     @Id
     @SequenceGenerator(name = "user_seq_gen", sequenceName = "users_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "user_seq_gen", strategy = GenerationType.SEQUENCE)
