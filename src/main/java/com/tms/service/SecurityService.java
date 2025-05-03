@@ -1,6 +1,7 @@
 package com.tms.service;
 
 import com.tms.exception.LoginUsedException;
+import com.tms.exception.RegistrationException;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.model.dto.RegistrationResponseDto;
 import com.tms.model.entity.Role;
@@ -32,10 +33,12 @@ public class SecurityService {
 
     @Transactional(rollbackFor = LoginUsedException.class)
     public Optional<RegistrationResponseDto> registration(RegistrationRequestDto registrationRequestDto)  {
-        if (securityRepository.existsByLogin(registrationRequestDto.getLogin())) {
+        if (securityRepository.existsByLogin(registrationRequestDto.getLogin())  ||
+                userRepository.existsByEmailOrTelephoneNumber(registrationRequestDto.getEmail(),
+                        registrationRequestDto.getTelephoneNumber() ) ) {
             try {
-                throw new LoginUsedException(registrationRequestDto.getLogin());
-            } catch (LoginUsedException e) {
+                throw new RegistrationException("Registration error: This (login, phone, email) already exists");
+            } catch (RegistrationException e) {
                 throw new RuntimeException(e);
             }
         }
