@@ -1,6 +1,6 @@
 package com.tms.controller;
 
-import com.tms.exception.LoginUsedException;
+import com.tms.exception.RegistrationException;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.model.dto.RegistrationResponseDto;
 import com.tms.service.SecurityService;
@@ -29,7 +29,7 @@ public class RegistrationController {
 
     @PostMapping
     public ResponseEntity<RegistrationResponseDto > registration(@RequestBody @Valid RegistrationRequestDto requestDto,
-                                             BindingResult bindingResult) throws LoginUsedException {
+                                             BindingResult bindingResult) throws RegistrationException {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
