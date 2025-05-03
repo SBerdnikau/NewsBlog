@@ -2,6 +2,7 @@ package com.tms.service;
 
 import com.tms.exception.LoginUsedException;
 import com.tms.model.dto.RegistrationRequestDto;
+import com.tms.model.dto.RegistrationResponseDto;
 import com.tms.model.entity.Role;
 import com.tms.model.entity.Security;
 import com.tms.model.entity.User;
@@ -17,15 +18,12 @@ import java.util.Optional;
 public class SecurityService {
     private final SecurityRepository securityRepository;
     private final UserRepository userRepository;
-    private User user;
-    private Security security;
+
 
     @Autowired
-    public SecurityService(SecurityRepository securityRepository, UserRepository userRepository, User user, Security security) {
+    public SecurityService(SecurityRepository securityRepository, UserRepository userRepository) {
         this.securityRepository = securityRepository;
         this.userRepository = userRepository;
-        this.user = user;
-        this.security = security;
     }
 
     public Optional<Security> getSecurityById(Long id) {
@@ -33,7 +31,7 @@ public class SecurityService {
     }
 
     @Transactional(rollbackFor = LoginUsedException.class)
-    public Optional<User> registration(RegistrationRequestDto registrationRequestDto)  {
+    public Optional<RegistrationResponseDto> registration(RegistrationRequestDto registrationRequestDto)  {
         if (securityRepository.existsByLogin(registrationRequestDto.getLogin())) {
             try {
                 throw new LoginUsedException(registrationRequestDto.getLogin());
@@ -42,21 +40,29 @@ public class SecurityService {
             }
         }
 
-        user.setUserName(registrationRequestDto.getUserName());
-        user.setSecondName(registrationRequestDto.getSecondName());
-        user.setEmail(registrationRequestDto.getEmail());
-        user.setTelephoneNumber(registrationRequestDto.getTelephoneNumber());
-        user.setIsDeleted(false);
+        User user = User.builder()
+                .userName(registrationRequestDto.getUserName())
+                .secondName(registrationRequestDto.getSecondName())
+                .email(registrationRequestDto.getEmail())
+                .telephoneNumber(registrationRequestDto.getTelephoneNumber())
+                .build();
+        User userRegistered = userRepository.save(user);
 
-        User userUpdated = userRepository.save(user);
-
-        security.setLogin(registrationRequestDto.getLogin());
-        security.setPassword(registrationRequestDto.getPassword());
-        security.setUserId(userUpdated.getId());
-        security.setRole(Role.USER);
-
+        Security security = Security.builder()
+                .login(registrationRequestDto.getLogin())
+                .password(registrationRequestDto.getPassword())
+                .userId(userRegistered.getId())
+                .role(Role.USER)
+                .build();
         securityRepository.save(security);
 
-        return  userRepository.findById(userUpdated.getId());
+        RegistrationResponseDto registrationResponseDto = RegistrationResponseDto.builder()
+                .userName(userRegistered.getUserName())
+                .secondName(userRegistered.getSecondName())
+                .email(userRegistered.getEmail())
+                .telephoneNumber(userRegistered.getTelephoneNumber())
+                .build();
+
+        return  Optional.of(registrationResponseDto);
     }
 }

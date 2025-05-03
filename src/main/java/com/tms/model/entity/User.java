@@ -1,24 +1,33 @@
 package com.tms.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Scope("prototype")
-@Component
 @Entity(name = "users")
 public class User {
     @Id
     @SequenceGenerator(name = "user_seq_gen", sequenceName = "users_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "user_seq_gen", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "user_seq_gen")
     private Long id;
 
     @NotNull(message = "User name cannot be null")
@@ -37,10 +46,6 @@ public class User {
     @Pattern(regexp = "[0-9]{12}", message = "Telephone number must be exactly 12 digits.")
     @Column(name = "telephone_number")
     private String telephoneNumber;
-
-    @NotNull(message = "Field deleted cannot be null")
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
 
     @NotNull(message = "Created date cannot be null")
     @JsonIgnore

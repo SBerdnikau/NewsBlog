@@ -1,21 +1,27 @@
 package com.tms.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Scope("prototype")
-@Component
 @Entity(name = "comments")
 public class Comment {
     @Id
     @SequenceGenerator(name = "comments_id_seq_gen", sequenceName = "comments_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "comments_id_seq_gen", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "comments_id_seq_gen")
     private Long id;
 
     @NotNull(message = "Comments topic cannot be null")
@@ -25,14 +31,19 @@ public class Comment {
     @Column(name = "description_comments")
     private String descriptionComments;
 
-    @NotNull(message = "Author (user) ID commenter cannot be null")
-    @Column(name = "author_comments")
-    private Long authorComments;
+    @NotNull
+    @Column(name = "user_id")
+    private Long authorCommentId;
 
-    @NotNull(message = "Created date cannot be null")
+    @NotNull
+    @Column(name = "news_id")
+    private Long newsId;
+
+    @JsonIgnore
     @Column(name = "created", updatable = false)
     private Timestamp created;
 
+    @JsonIgnore
     @Column(name = "updated")
     private Timestamp updated;
 

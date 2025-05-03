@@ -1,5 +1,6 @@
 package com.tms.controller;
 
+import com.tms.model.dto.CommentResponseDto;
 import com.tms.model.entity.Comment;
 import com.tms.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,10 @@ public class CommentsController {
         this.commentService = commentService;
     }
 
+    @PostMapping
     public ResponseEntity<HttpStatus> createNews(@RequestBody Comment comment) {
-        Boolean result = commentService.createComment(comment);
-        if (!result) {
+        Optional<CommentResponseDto> commentResponseDto = commentService.createComment(comment);
+        if (commentResponseDto.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -38,21 +40,21 @@ public class CommentsController {
     }
 
     @PutMapping
-    public ResponseEntity<Comment> updateComment(@RequestBody Comment comment) {
-        Optional<Comment> commentUpdated = commentService.updateComment(comment);
+    public ResponseEntity<CommentResponseDto> updateComment(@RequestBody Comment comment) {
+        Optional<CommentResponseDto> commentUpdated = commentService.updateComment(comment);
         if (commentUpdated.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(commentUpdated.get(), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Comment>> getAllComments() {
-        List<Comment> commentList = commentService.getAllComment();
+    @GetMapping("/all")
+    public ResponseEntity<List<CommentResponseDto>> getAllComments() {
+        Optional<List<CommentResponseDto>> commentList = commentService.getAllComment();
         if (commentList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(commentList, HttpStatus.OK);
+        return new ResponseEntity<>(commentList.get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

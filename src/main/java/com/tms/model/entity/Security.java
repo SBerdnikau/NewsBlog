@@ -5,20 +5,24 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Scope("prototype")
-@Component
 @Entity(name = "security")
 public class Security {
     @Id
     @SequenceGenerator(name = "security_seq_gen", sequenceName = "security_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "security_seq_gen", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "security_seq_gen")
     private Long id;
 
     @NotNull(message = "Login cannot be null")
@@ -33,7 +37,7 @@ public class Security {
     @Column(name = "password")
     private String password;
 
-    @NotNull(message = "User ID cannot be null")
+    @NotNull
     @Column(name = "user_id")
     private Long userId;
 

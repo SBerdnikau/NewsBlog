@@ -1,5 +1,6 @@
 package com.tms.service;
 
+import com.tms.model.dto.CommentResponseDto;
 import com.tms.model.entity.Comment;
 import com.tms.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,30 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public List<Comment> getAllComment() {
-        return commentRepository.findAll();
+    public Optional<List<CommentResponseDto>> getAllComment() {
+        return Optional.of(commentRepository.findAll().stream()
+                .map(commentRequestDto -> CommentResponseDto.builder()
+                        .commentTopic(commentRequestDto.getCommentTopic())
+                        .descriptionComments(commentRequestDto.getDescriptionComments())
+                        .newsId(commentRequestDto.getNewsId())
+                        .authorCommentId(commentRequestDto.getAuthorCommentId())
+                        .build()
+                ).toList());
     }
 
     public Optional<Comment> getCommentById(Long id) {
         return commentRepository.findById(id);
     }
 
-    public Optional<Comment> updateComment(Comment comment) {
-        return Optional.of(commentRepository.save(comment));
+    public Optional<CommentResponseDto> updateComment(Comment comment) {
+        return Optional.of(commentRepository.save(comment))
+                .map(commentRequestDto -> CommentResponseDto.builder()
+                        .commentTopic(commentRequestDto.getCommentTopic())
+                        .descriptionComments(commentRequestDto.getDescriptionComments())
+                        .newsId(commentRequestDto.getNewsId())
+                        .authorCommentId(commentRequestDto.getAuthorCommentId())
+                        .build()
+                );
     }
 
     public Boolean deleteComment(Long id) {
@@ -34,12 +49,14 @@ public class CommentService {
         return !commentRepository.existsById(id);
     }
 
-    public Boolean createComment(Comment comment) {
-        try {
-            commentRepository.save(comment);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+    public Optional<CommentResponseDto> createComment(Comment comment) {
+         return  Optional.of(commentRepository.save(comment))
+                 .map(commentRequestDto -> CommentResponseDto.builder()
+                         .commentTopic(commentRequestDto.getCommentTopic())
+                         .descriptionComments(commentRequestDto.getDescriptionComments())
+                         .newsId(commentRequestDto.getNewsId())
+                         .authorCommentId(commentRequestDto.getAuthorCommentId())
+                         .build()
+                 );
     }
 }

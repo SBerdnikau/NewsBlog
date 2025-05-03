@@ -1,5 +1,7 @@
 package com.tms.service;
 
+import com.tms.model.dto.NewsResponseDto;
+
 import com.tms.model.entity.News;
 import com.tms.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +20,29 @@ public class NewsService {
         this.newsRepository = newsRepository;
     }
 
-    public List<News> getAllNews() {
-        return newsRepository.findAll();
+    public Optional<List<NewsResponseDto>> getAllNews() {
+        return Optional.of(newsRepository.findAll().stream()
+                .map( newsRequestDto -> NewsResponseDto.builder()
+                        .title(newsRequestDto.getTitle())
+                        .imageNews(newsRequestDto.getImageNews())
+                        .descriptionNews(newsRequestDto.getDescriptionNews())
+                        .authorNewsId(newsRequestDto.getAuthorNewsId())
+                        .build()
+                ).toList());
     }
 
     public Optional<News> getNewsById(Long id) {
         return newsRepository.findById(id);
     }
 
-    public Optional<News> updateNews(News news) {
-        return Optional.of(newsRepository.save(news));
+    public Optional<NewsResponseDto> updateNews(News news) {
+        return Optional.of(newsRepository.save(news))
+                .map(newsRequestDto -> NewsResponseDto.builder()
+                        .title(newsRequestDto.getTitle())
+                        .imageNews(newsRequestDto.getImageNews())
+                        .descriptionNews(newsRequestDto.getDescriptionNews())
+                        .authorNewsId(newsRequestDto.getAuthorNewsId())
+                        .build());
     }
 
     public Boolean deleteNews(Long id) {
@@ -35,12 +50,13 @@ public class NewsService {
         return !newsRepository.existsById(id);
     }
 
-    public Boolean createNews(News news) {
-        try {
-            newsRepository.save(news);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+    public Optional<NewsResponseDto> createNews(News news) {
+        return Optional.of(newsRepository.save(news))
+                .map( newsRequestDto -> NewsResponseDto.builder()
+                        .title(newsRequestDto.getTitle())
+                        .imageNews(newsRequestDto.getImageNews())
+                        .descriptionNews(newsRequestDto.getDescriptionNews())
+                        .authorNewsId(newsRequestDto.getAuthorNewsId())
+                        .build());
     }
 }

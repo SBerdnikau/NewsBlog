@@ -1,5 +1,6 @@
 package com.tms.controller;
 
+import com.tms.model.dto.NewsResponseDto;
 import com.tms.model.entity.News;
 import com.tms.model.entity.User;
 import com.tms.service.NewsService;
@@ -21,9 +22,10 @@ public class NewsController {
         this.newsService = newsService;
     }
 
+    @PostMapping
     public ResponseEntity<HttpStatus> createNews(@RequestBody News news) {
-        Boolean result = newsService.createNews(news);
-        if (!result) {
+        Optional<NewsResponseDto> newsResponseDto = newsService.createNews(news);
+        if (newsResponseDto.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -39,21 +41,21 @@ public class NewsController {
     }
 
     @PutMapping
-    public ResponseEntity<News> updateNews(@RequestBody News news) {
-        Optional<News> newsUpdated = newsService.updateNews(news);
+    public ResponseEntity<NewsResponseDto> updateNews(@RequestBody News news) {
+        Optional<NewsResponseDto> newsUpdated = newsService.updateNews(news);
         if (newsUpdated.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(newsUpdated.get(), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<News>> getAllNews() {
-        List<News> newsList = newsService.getAllNews();
+    @GetMapping("/all")
+    public ResponseEntity<List<NewsResponseDto>> getAllNews() {
+        Optional<List<NewsResponseDto>> newsList = newsService.getAllNews();
         if (newsList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(newsList, HttpStatus.OK);
+        return new ResponseEntity<>(newsList.get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

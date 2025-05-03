@@ -1,5 +1,6 @@
 package com.tms.controller;
 
+import com.tms.model.dto.UserResponseDto;
 import com.tms.model.entity.User;
 import com.tms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    public ResponseEntity<HttpStatus> createUser(@RequestBody User user) {
-        Boolean result = userService.createUser(user);
-        if (!result) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id")  Long id) {
         Optional<User> user = userService.getUserById(id);
@@ -38,21 +31,21 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        Optional<User> userUpdated = userService.updateUser(user);
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody User user) {
+        Optional<UserResponseDto> userUpdated = userService.updateUser(user);
         if (userUpdated.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(userUpdated.get(), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+        Optional<List<UserResponseDto>> users = userService.getAllUsers();
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(users.get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

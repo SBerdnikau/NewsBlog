@@ -1,5 +1,6 @@
 package com.tms.service;
 
+import com.tms.model.dto.UserResponseDto;
 import com.tms.model.entity.User;
 import com.tms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,29 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public Optional<List<UserResponseDto>> getAllUsers() {
+        return Optional.of(userRepository.findAll().stream()
+                .map(user -> UserResponseDto.builder()
+                        .userName(user.getUserName())
+                        .secondName(user.getSecondName())
+                        .email(user.getEmail())
+                        .telephoneNumber(user.getTelephoneNumber())
+                        .build()
+                ).toList());
     }
 
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    public Optional<User> updateUser(User user) {
-         return Optional.of(userRepository.save(user));
+    public Optional<UserResponseDto> updateUser(User user) {
+         return Optional.of(userRepository.save(user))
+                 .map(userRequestDto -> UserResponseDto.builder()
+                         .userName(userRequestDto.getUserName())
+                         .secondName(userRequestDto.getSecondName())
+                         .email(userRequestDto.getEmail())
+                         .telephoneNumber(userRequestDto.getTelephoneNumber())
+                         .build());
     }
 
     public Boolean deleteUser(Long id) {
@@ -34,13 +48,4 @@ public class UserService {
         return !userRepository.existsById(id);
     }
 
-    public Boolean createUser(User user) {
-        user.setIsDeleted(false);
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
 }
