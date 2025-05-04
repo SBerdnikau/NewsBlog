@@ -3,11 +3,14 @@ package com.tms.controller;
 import com.tms.exception.RegistrationException;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.model.dto.RegistrationResponseDto;
+import com.tms.service.RegistrationService;
 import com.tms.service.SecurityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class RegistrationController {
 
     private final SecurityService securityService;
+    private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
     @Autowired
     public RegistrationController(SecurityService securityService) {
@@ -37,8 +41,10 @@ public class RegistrationController {
     @ApiResponse(responseCode = "409", description = "Conflict: user already exists")
     @PostMapping
     public ResponseEntity<RegistrationResponseDto > registration(@RequestBody @Valid RegistrationRequestDto requestDto,
-                                             BindingResult bindingResult) throws RegistrationException {
+                                             BindingResult bindingResult) {
+        logger.info("Received registration request for user: {}", requestDto.getLogin());
         if (bindingResult.hasErrors()) {
+            logger.warn("Login '{}' is already in use.", requestDto.getLogin());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<RegistrationResponseDto> userRegistered = securityService.registration(requestDto);

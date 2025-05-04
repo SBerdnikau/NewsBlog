@@ -19,7 +19,6 @@ public class SecurityService {
     private final SecurityRepository securityRepository;
     private final UserRepository userRepository;
 
-
     @Autowired
     public SecurityService(SecurityRepository securityRepository, UserRepository userRepository) {
         this.securityRepository = securityRepository;
