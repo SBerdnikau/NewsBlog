@@ -4,6 +4,9 @@ import com.tms.exception.RegistrationException;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.model.dto.RegistrationResponseDto;
 import com.tms.service.SecurityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/registration")
+@Tag(name = "Security Controller", description = "Registration Management")
 public class RegistrationController {
 
     private final SecurityService securityService;
@@ -27,6 +31,10 @@ public class RegistrationController {
         this.securityService = securityService;
     }
 
+    @Operation(summary = "User registration", description = "Registers a new user in the system")
+    @ApiResponse(responseCode = "201", description = "User registered successfully")
+    @ApiResponse(responseCode = "400", description = "Incorrect request data")
+    @ApiResponse(responseCode = "409", description = "Conflict: user already exists")
     @PostMapping
     public ResponseEntity<RegistrationResponseDto > registration(@RequestBody @Valid RegistrationRequestDto requestDto,
                                              BindingResult bindingResult) throws RegistrationException {

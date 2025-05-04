@@ -2,8 +2,10 @@ package com.tms.controller;
 
 import com.tms.model.dto.NewsResponseDto;
 import com.tms.model.entity.News;
-import com.tms.model.entity.User;
 import com.tms.service.NewsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/news")
+@Tag(name = "News Controller", description = "News Management")
 public class NewsController {
     private final NewsService newsService;
 
@@ -22,6 +25,9 @@ public class NewsController {
         this.newsService = newsService;
     }
 
+    @Operation(summary = "Create news", description = "Adds a new news to the system")
+    @ApiResponse(responseCode = "201", description = "News successfully created")
+    @ApiResponse(responseCode = "409", description = "Conflict: News not created")
     @PostMapping
     public ResponseEntity<HttpStatus> createNews(@RequestBody News news) {
         Optional<NewsResponseDto> newsResponseDto = newsService.createNews(news);
@@ -31,6 +37,9 @@ public class NewsController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get news by ID", description = "Returns a news by their unique ID")
+    @ApiResponse(responseCode = "200", description = "News found")
+    @ApiResponse(responseCode = "404", description = "News not found")
     @GetMapping("/{id}")
     public ResponseEntity<News> getNewsById(@PathVariable("id")  Long newsId) {
         Optional<News> news = newsService.getNewsById(newsId);
@@ -40,6 +49,9 @@ public class NewsController {
         return new ResponseEntity<>(news.get(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Update news", description = "Updates news information")
+    @ApiResponse(responseCode = "200", description = "News updated successfully")
+    @ApiResponse(responseCode = "409", description = "Conflict when updating news")
     @PutMapping
     public ResponseEntity<NewsResponseDto> updateNews(@RequestBody News news) {
         Optional<NewsResponseDto> newsUpdated = newsService.updateNews(news);
@@ -49,6 +61,9 @@ public class NewsController {
         return new ResponseEntity<>(newsUpdated.get(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get all news", description = "Return all news")
+    @ApiResponse(responseCode = "200", description = "News list successfully retrieved")
+    @ApiResponse(responseCode = "204", description = "The news list is empty")
     @GetMapping("/all")
     public ResponseEntity<List<NewsResponseDto>> getAllNews() {
         Optional<List<NewsResponseDto>> newsList = newsService.getAllNews();
@@ -58,6 +73,9 @@ public class NewsController {
         return new ResponseEntity<>(newsList.get(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete news", description = "Deletes news by ID")
+    @ApiResponse(responseCode = "204", description = "News successfully deleted")
+    @ApiResponse(responseCode = "409", description = "Error deleting news")
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteNews(@PathVariable("id") Long newsId) {
         Boolean result = newsService.deleteNews(newsId);

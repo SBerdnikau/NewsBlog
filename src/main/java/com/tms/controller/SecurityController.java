@@ -2,6 +2,10 @@ package com.tms.controller;
 
 import com.tms.model.entity.Security;
 import com.tms.service.SecurityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/security")
+@Tag(name = "Security Controller", description = "Security Management")
 public class SecurityController {
     private final SecurityService securityService;
 
@@ -19,8 +24,11 @@ public class SecurityController {
         this.securityService = securityService;
     }
 
+    @Operation(summary = "User Security Data", description = "Return security by ID")
+    @ApiResponse(responseCode = "200", description = "Data found successfully")
+    @ApiResponse(responseCode = "404", description = "Data not found")
     @GetMapping("/{id}")
-    public ResponseEntity<Security> getSecurityById(@PathVariable("id") Long id) {
+    public ResponseEntity<Security> getSecurityById(@PathVariable("id") @Parameter(name = "id") Long id) {
         Optional<Security> security = securityService.getSecurityById(id);
         if (security.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
