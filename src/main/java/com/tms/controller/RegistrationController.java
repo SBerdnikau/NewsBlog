@@ -1,9 +1,7 @@
 package com.tms.controller;
 
-import com.tms.exception.RegistrationException;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.model.dto.RegistrationResponseDto;
-import com.tms.service.RegistrationService;
 import com.tms.service.SecurityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,8 +47,10 @@ public class RegistrationController {
         }
         Optional<RegistrationResponseDto> userRegistered = securityService.registration(requestDto);
         if (userRegistered.isEmpty()) {
+            logger.info("Conflict: User not registered {}", requestDto.getLogin());
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+        logger.info("User registered successfully: {}", userRegistered.get());
         return new ResponseEntity<>(userRegistered.get(), HttpStatus.CREATED);
     }
 

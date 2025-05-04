@@ -18,6 +18,7 @@ public class NewsBlogApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NewsBlogApplication.class, args);
+
     }
 
 }
