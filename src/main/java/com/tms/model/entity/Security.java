@@ -26,14 +26,9 @@ public class Security {
     private Long id;
 
     @NotNull(message = "Login cannot be null")
-    @NotBlank(message = "Login cannot be blank")
-    @Size(min = 4, max = 50, message = "Login must be between 4 and 50 characters")
     @Column(name = "login", length = 50)
     private String login;
 
-    @NotNull(message = "Password cannot be null")
-    @NotBlank(message = "Password cannot be blank")
-    @Size(min = 6, max = 255, message = "Password must be between 6 and 255 characters")
     @Column(name = "password")
     private String password;
 
