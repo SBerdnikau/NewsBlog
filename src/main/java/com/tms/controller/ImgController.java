@@ -1,9 +1,12 @@
 package com.tms.controller;
 
+import com.tms.service.FileService;
 import com.tms.service.ImgService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class ImgController {
 
     private final ImgService imgService;
+    private static final Logger logger = LoggerFactory.getLogger(ImgService.class);
 
     public ImgController(ImgService imgService) {
         this.imgService = imgService;
@@ -35,6 +39,7 @@ public class ImgController {
     @ApiResponse(responseCode = "409", description = "Image not uploaded")
     @PostMapping
     public ResponseEntity<HttpStatus> uploadImage(@RequestParam("file") MultipartFile file) {
+        logger.info("Received request to upload image: {}", file);
         Boolean result = imgService.uploadImage(file);
         return new ResponseEntity<>(result ? HttpStatus.CREATED : HttpStatus.CONFLICT);
     }
@@ -44,12 +49,15 @@ public class ImgController {
     @ApiResponse(responseCode = "404", description = "Image not found")
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        logger.info("Received request to fetch image: {}", filename);
         Optional<Resource> resource = imgService.getImage(filename);
         if (resource.isPresent()) {
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.get().getFilename());
+            logger.info("Image successfully fetched: {}",filename);
             return new ResponseEntity<>(resource.get(), headers, HttpStatus.OK);
         }
+        logger.warn("Image with name  {} not found", filename);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -58,6 +66,7 @@ public class ImgController {
     @ApiResponse(responseCode = "409", description = "Files not deleted")
     @DeleteMapping("/{filename}")
     public ResponseEntity<HttpStatus> deleteImage(@PathVariable("filename") String filename) {
+        logger.info("Received request to delete image with name: {}", filename);
         Boolean result = imgService.deleteImage(filename);
         return new ResponseEntity<>(result ? HttpStatus.NO_CONTENT : HttpStatus.CONFLICT);
     }

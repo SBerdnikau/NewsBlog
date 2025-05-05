@@ -4,6 +4,8 @@ import com.tms.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +29,7 @@ import java.util.Optional;
 @Tag(name = "File Controller", description = "File Management")
 public class FileController {
     private final FileService fileService;
+    private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
     @Autowired
     public FileController(FileService fileService) {
@@ -38,6 +41,7 @@ public class FileController {
     @ApiResponse(responseCode = "409", description = "File not uploaded")
     @PostMapping
     public ResponseEntity<HttpStatus> uploadFile(@RequestParam("file") MultipartFile file) {
+        logger.info("Received request to upload file: {}", file);
         Boolean result = fileService.uploadFile(file);
         return new ResponseEntity<>(result ? HttpStatus.CREATED : HttpStatus.CONFLICT);
     }
@@ -47,12 +51,15 @@ public class FileController {
     @ApiResponse(responseCode = "404", description = "File not found")
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        logger.info("Received request to fetch file: {}", filename);
         Optional<Resource> resource = fileService.getFile(filename);
         if (resource.isPresent()) {
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.get().getFilename());
+            logger.info("File successfully fetched: {}",filename);
             return new ResponseEntity<>(resource.get(), headers, HttpStatus.OK);
         }
+        logger.warn("File with name  {} not found", filename);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -62,16 +69,20 @@ public class FileController {
     @ApiResponse(responseCode = "500", description = "Server error reading file")
     @GetMapping
     public ResponseEntity<ArrayList<String>> getListOfFiles() {
+        logger.info("Received request to fetch all files");
         ArrayList<String> files;
         try {
             files = fileService.getListOfFiles();
         } catch (IOException e) {
             System.out.println(e.getMessage());
+            logger.error("Server error reading files, {}" ,e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (files.isEmpty()) {
+            logger.warn("Files not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        logger.info("Files to fetch successfully: {}", files);
         return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
@@ -80,6 +91,7 @@ public class FileController {
     @ApiResponse(responseCode = "409", description = "Files not deleted")
     @DeleteMapping("/{filename}")
     public ResponseEntity<HttpStatus> deleteFile(@PathVariable("filename") String filename) {
+        logger.info("Received request to delete file with name: {}", filename);
         Boolean result = fileService.deleteFile(filename);
         return new ResponseEntity<>(result ? HttpStatus.NO_CONTENT : HttpStatus.CONFLICT);
     }
