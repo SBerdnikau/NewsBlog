@@ -20,7 +20,7 @@ Process HTTP requests and associate them with services.
 - FileController - Managing website file uploads
 - ImgController - Managing website image loading
 
-  ### 2. Services
+### 2. Services
 
   Contains business logic such as user registration, updating user data, deleting a user from the site, adding a news article to the site, updating, deleting, and getting by ID, you can also get a list of news. Adding comments, updating, getting and deleting, logic for uploading and downloading files from the site.
 
