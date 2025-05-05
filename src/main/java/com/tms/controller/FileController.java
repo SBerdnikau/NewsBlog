@@ -1,6 +1,9 @@
 package com.tms.controller;
 
 import com.tms.service.FileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/file")
+@Tag(name = "File Controller", description = "File Management")
 public class FileController {
     private final FileService fileService;
 
@@ -29,12 +33,18 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    @Operation(summary = "Upload file by name", description = "Upload file by their name")
+    @ApiResponse(responseCode = "200", description = "File uploaded")
+    @ApiResponse(responseCode = "409", description = "File not uploaded")
     @PostMapping
     public ResponseEntity<HttpStatus> uploadFile(@RequestParam("file") MultipartFile file) {
         Boolean result = fileService.uploadFile(file);
         return new ResponseEntity<>(result ? HttpStatus.CREATED : HttpStatus.CONFLICT);
     }
 
+    @Operation(summary = "Get file by name", description = "Returns a file by their name")
+    @ApiResponse(responseCode = "200", description = "File found")
+    @ApiResponse(responseCode = "404", description = "File not found")
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         Optional<Resource> resource = fileService.getFile(filename);
@@ -46,6 +56,10 @@ public class FileController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "Get all files", description = "Returns all files")
+    @ApiResponse(responseCode = "200", description = "Files found")
+    @ApiResponse(responseCode = "404", description = "Files not found")
+    @ApiResponse(responseCode = "500", description = "Server error reading file")
     @GetMapping
     public ResponseEntity<ArrayList<String>> getListOfFiles() {
         ArrayList<String> files;
@@ -61,6 +75,9 @@ public class FileController {
         return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
+    @Operation(summary = "Delete file by name", description = "Delete file by their name")
+    @ApiResponse(responseCode = "204", description = "File deleted")
+    @ApiResponse(responseCode = "409", description = "Files not deleted")
     @DeleteMapping("/{filename}")
     public ResponseEntity<HttpStatus> deleteFile(@PathVariable("filename") String filename) {
         Boolean result = fileService.deleteFile(filename);
