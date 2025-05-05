@@ -36,3 +36,13 @@ Define business models for the database.
 
 - LogInterceptor: logging all requests
 - AppConfig: Configuring SpringBoot and connecting interceptors.
+
+  ## Project technologies
+- Java 21 is the main working environment.
+- Spring Boot is the main framework.
+- Spring Data JPA - interaction with the database.
+- PostgreSQL is a database for storing information.
+- Swagger - для веб документирования приложения
+- Logging slf4j - logging application activities
+- AOP - for calculating the work of methods and logging through requests
+  
