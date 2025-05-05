@@ -24,4 +24,15 @@ Process HTTP requests and associate them with services.
 
   Contains business logic such as user registration, updating user data, deleting a user from the site, adding a news article to the site, updating, deleting, and getting by ID, you can also get a list of news. Adding comments, updating, getting and deleting, logic for uploading and downloading files from the site.
 
-  
+### 3. Repositories  
+
+Working with a database using Spring Data JPA.
+
+### 4. Entities
+
+Define business models for the database.
+
+### 5. Конфигурация
+
+- LogInterceptor: logging all requests
+- AppConfig: Configuring SpringBoot and connecting interceptors.
