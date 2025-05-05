@@ -32,7 +32,7 @@ Working with a database using Spring Data JPA.
 
 Define business models for the database.
 
-### 5. Конфигурация
+### 5. Configuration
 
 - LogInterceptor: logging all requests
 - AppConfig: Configuring SpringBoot and connecting interceptors.
