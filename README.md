@@ -42,7 +42,7 @@ Define business models for the database.
 - Spring Boot is the main framework.
 - Spring Data JPA - interaction with the database.
 - PostgreSQL is a database for storing information.
-- Swagger - для веб документирования приложения
+- Swagger - for web application documentation
 - Logging slf4j - logging application activities
 - AOP - for calculating the work of methods and logging through requests
   
