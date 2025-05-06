@@ -67,7 +67,7 @@ public class FileController {
     @ApiResponse(responseCode = "200", description = "Files found")
     @ApiResponse(responseCode = "404", description = "Files not found")
     @ApiResponse(responseCode = "500", description = "Server error reading file")
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<ArrayList<String>> getListOfFiles() {
         logger.info("Received request to fetch all files");
         ArrayList<String> files;

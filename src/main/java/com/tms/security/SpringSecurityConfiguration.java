@@ -68,6 +68,16 @@ public class SpringSecurityConfiguration {
                                 .requestMatchers(new AntPathRequestMatcher("/security", "GET")).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/security/token", "POST")).permitAll()
 
+                                .requestMatchers(new AntPathRequestMatcher("/file", "GET")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/file", "POST")).hasAnyRole("ADMIN", "MODERATOR")
+                                .requestMatchers(new AntPathRequestMatcher("/file", "DELETE")).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/file/**", "GET")).permitAll()
+
+                                .requestMatchers(new AntPathRequestMatcher("/image", "GET")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/image", "POST")).hasAnyRole("ADMIN", "MODERATOR")
+                                .requestMatchers(new AntPathRequestMatcher("/image", "DELETE")).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/image/**", "GET")).hasRole("ADMIN")
+
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
