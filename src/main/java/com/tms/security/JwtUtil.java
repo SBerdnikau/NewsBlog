@@ -37,7 +37,7 @@ public class JwtUtil {
 
     public Optional<String> getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {    //asdasdad.asdsadasd.asdasdas
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return Optional.of(bearerToken.substring(7));
         }
         return Optional.empty();

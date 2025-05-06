@@ -24,7 +24,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 )
 @Configuration
 public class SpringSecurityConfiguration {
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
     @Autowired
     public SpringSecurityConfiguration(JwtFilter jwtFilter) {
@@ -46,11 +46,28 @@ public class SpringSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         requests -> requests
-                                .requestMatchers(new AntPathRequestMatcher("/user", "PUT")).hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(new AntPathRequestMatcher("/user", "PUT")).hasAnyRole("ADMIN","MODERATOR" ,"USER")
                                 .requestMatchers(new AntPathRequestMatcher("/user", "GET")).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/user", "DELETE")).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/user/**", "GET")).hasRole("ADMIN")
+
+                                .requestMatchers(new AntPathRequestMatcher("/news", "GET")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/news", "POST")).hasAnyRole("ADMIN", "MODERATOR")
+                                .requestMatchers(new AntPathRequestMatcher("/news", "PUT")).hasAnyRole("ADMIN", "MODERATOR")
+                                .requestMatchers(new AntPathRequestMatcher("/news", "DELETE")).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/news/**", "GET")).permitAll()
+
+                                .requestMatchers(new AntPathRequestMatcher("/comment", "GET")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/comment", "POST")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/comment", "PUT")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/comment", "DELETE")).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/comment/**", "GET")).permitAll()
+
                                 .requestMatchers(new AntPathRequestMatcher("/registration", "POST")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/security", "PUT")).hasRole("ADMIN")
+                                .requestMatchers(new AntPathRequestMatcher("/security", "GET")).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/security/token", "POST")).permitAll()
+
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
