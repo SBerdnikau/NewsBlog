@@ -1,7 +1,6 @@
 package com.tms.service;
 
 import com.tms.model.dto.NewsResponseDto;
-
 import com.tms.model.entity.News;
 import com.tms.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;

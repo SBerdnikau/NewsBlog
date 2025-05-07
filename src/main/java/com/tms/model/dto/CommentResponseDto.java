@@ -10,13 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class CommentResponseDto {
-
     private String commentTopic;
-
     private String descriptionComments;
-
     private Long newsId;
-
     private Long authorCommentId;
-
 }

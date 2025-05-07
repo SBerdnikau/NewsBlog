@@ -4,8 +4,6 @@ import com.tms.exception.RegistrationException;
 import com.tms.model.dto.AuthRequestDto;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.model.dto.RegistrationResponseDto;
-import com.tms.model.dto.SecurityResponseDto;
-import com.tms.model.dto.UserResponseDto;
 import com.tms.model.entity.Role;
 import com.tms.model.entity.Security;
 import com.tms.model.entity.User;
@@ -43,7 +41,6 @@ public class SecurityService {
         }
         throw new AccessDeniedException("Access denied login:" + SecurityContextHolder.getContext().getAuthentication().getName() + " by id: " + id);
     }
-
 
     @Transactional(rollbackFor = RegistrationException.class)
     public Optional<RegistrationResponseDto> registration(RegistrationRequestDto registrationRequestDto)  {

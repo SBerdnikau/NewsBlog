@@ -15,10 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RegistrationResponseDto {
     private String userName;
-
     private String secondName;
-
     private String email;
-
     private String telephoneNumber;
 }

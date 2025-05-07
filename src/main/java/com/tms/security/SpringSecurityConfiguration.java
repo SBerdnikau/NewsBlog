@@ -64,7 +64,6 @@ public class SpringSecurityConfiguration {
                                 .requestMatchers(new AntPathRequestMatcher("/comment/**", "GET")).permitAll()
 
                                 .requestMatchers(new AntPathRequestMatcher("/registration", "POST")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/security", "PUT")).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/security", "GET")).hasRole("ADMIN")
                                 .requestMatchers(new AntPathRequestMatcher("/security/token", "POST")).permitAll()
 

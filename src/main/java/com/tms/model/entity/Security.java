@@ -29,6 +29,7 @@ public class Security {
     @Column(name = "login", length = 50)
     private String login;
 
+    @NotNull(message = "Password cannot be null")
     @Column(name = "password")
     private String password;
 
@@ -41,7 +42,6 @@ public class Security {
     @Column(length = 20)
     private Role role;
 
-    @NotNull(message = "Created date cannot be null")
     @JsonIgnore
     @Column(name = "created", updatable = false)
     private Timestamp created;

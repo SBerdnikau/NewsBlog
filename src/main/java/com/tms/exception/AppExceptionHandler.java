@@ -28,6 +28,18 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = SecurityUpdateException.class)
+    public ResponseEntity<String> loginUsedExceptionHandler(SecurityUpdateException exception) {
+        log.error(exception.getMessage());
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = SecurityLoginUsedException.class)
+    public ResponseEntity<String> loginUsedExceptionHandler(SecurityLoginUsedException exception) {
+        log.error(exception.getMessage());
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<String> entityNotFoundExceptionExceptionHandler(EntityNotFoundException exception) {
         log.error(exception.getMessage());
