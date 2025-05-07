@@ -3,7 +3,7 @@ create table if not exists public.users
     id               bigserial
         constraint users_pk
             primary key,
-    first_name       varchar(255)                        not null,
+    user_name       varchar(255)                        not null,
     second_name      varchar(255)                        not null,
     email            varchar(255)                        not null,
     telephone_number varchar(255)                        not null,
@@ -42,15 +42,15 @@ create table if not exists public.news
     title            varchar(100)                        not null,
     image_news       varchar(255),
     description_news varchar(512),
-    author_news      bigint
-        constraint author_news_id
+    user_id      bigint
+        constraint user_id
             references public.users
             on update cascade on delete cascade,
     created          timestamp default CURRENT_TIMESTAMP not null,
     updated          timestamp default CURRENT_TIMESTAMP
 );
 
-comment on column public.news.author_news is 'user_id';
+comment on column public.news.user_id is 'user_id';
 
 alter table public.news
     owner to admin;
@@ -62,15 +62,15 @@ create table if not exists public.comments
             primary key,
     comment_topic        varchar(255)                        not null,
     description_comments varchar(512),
-    author_comments      bigint                              not null
-        constraint author_comments_id
+    user_id      bigint                              not null
+        constraint user_id
             references public.users
             on update cascade on delete cascade,
     created              timestamp default CURRENT_TIMESTAMP not null,
     updated              timestamp default CURRENT_TIMESTAMP
 );
 
-comment on constraint author_comments_id on public.comments is 'user_id';
+comment on constraint user_id on public.comments is 'user_id';
 
 alter table public.comments
     owner to admin;
